@@ -24,9 +24,41 @@ namespace Ecommerce.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
 		{
-            _db.Categories.Add(obj);
-            _db.SaveChanges();
-			return RedirectToAction("index","category");
+			if(ModelState.IsValid)
+			{
+				_db.Categories.Add(obj);
+				_db.SaveChanges();
+				return RedirectToAction("index", "category");
+
+			}
+			return View();
+		}
+
+		public IActionResult Edit(int? id)
+		{
+			if(id == null||id==0) {
+				return NotFound();
+
+			}
+			Category categoryFromdb = _db.Categories.Find(id);
+			if(categoryFromdb == null) {
+				return NotFound();
+			}
+
+			return View(categoryFromdb);
+		}
+		[HttpPost]
+		public IActionResult Edit(Category obj)
+		{
+
+			if (ModelState.IsValid)
+			{
+				_db.Categories.Update(obj);
+				_db.SaveChanges();
+				return RedirectToAction("index", "category");
+
+			}
+			return View();
 		}
 	}
 }

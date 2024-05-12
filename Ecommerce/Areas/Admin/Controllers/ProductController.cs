@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Data;
+using Ecommerce.DataAccess.Repository;
 using Ecommerce.DataAccess.Repository.IRepository;
 using Ecommerce.Model;
 using Ecommerce.Model.ViewModel;
@@ -22,7 +23,7 @@ namespace Ecommerce.Areas.Admin.Controllers
 		}
 		public IActionResult Index()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
          
 
             return View(objProductList);
@@ -128,5 +129,16 @@ namespace Ecommerce.Areas.Admin.Controllers
             return RedirectToAction("Index");
 
         }
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+            return Json(new { data = productList });
+        }
+        #endregion
     }
+
+
+
 }

@@ -1,7 +1,4 @@
-﻿@model  List<Product>
-
-
-<div class="container p-3">
+﻿<div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
             <h2 class="text-primary">Product List</h2>
@@ -14,55 +11,21 @@
 	</div>
     <br /><br />
 
-<table class="table table-bordered table-striped" style="width:100%">
+<table  id="tblData"  class="table table-bordered table-striped" style="width:100%">
     <thead>
         <tr>
-            <th> Product Name </th>
-            <th> Brand </th>
-            <th> Size </th>
-            <th> Fabric </th>
-            <th> List Price </th>
-            <th> Category </th>
-
-
-
-
-           
- 		</tr>
+            <th>Title</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Size</th>
+            <th>Fabric</th>
+            <th>Category</th>
+            <th>Action</th>
+		</tr>
 	</thead>
-    <tbody>
-        @foreach(var obj in Model)
-        {
-            <tr>
-                <td >
-                    @obj.Product_Name
-				</td>
-                <td >
-                    @obj.Brand
-				</td>
-                    <td >
-                        @obj.Size
-                    </td>
-                    <td >
-                        @obj.Fabric
-                    </td>
-                    <td>
-                        @obj.ListPrice
-                    </td>
-                    <td >
-                      
-                    </td>
-                <td>
-                    <div class="w-75 btn-group" role="group">
-                        <a asp-controller="Product" asp-action="Upsert" asp-route-id="@obj.Id"
-                        class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit</a>
-                        <a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id"
-                        class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete</a>
-					</div>
-				</td>
-			</tr>
-        }
-    </tbody>
-
 </table>
 </div>
+
+@section Scripts{
+    <script src="~/js/product.js"></script>
+}

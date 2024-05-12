@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Data;
+using Ecommerce.DataAccess.Repository.IRepository;
 using Ecommerce.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,14 +7,14 @@ namespace Ecommerce.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitOfWork;
+        public CategoryController(IUnitOfWork db)
         {
-            _db = db;
+            _unitOfWork = db;
         }
         public IActionResult Index()
         {
-            List<Category> objCategoryList =_db.Categories.ToList();
+            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
             return View(objCategoryList);
         }
 
@@ -26,8 +27,8 @@ namespace Ecommerce.Controllers
 		{
 			if(ModelState.IsValid)
 			{
-				_db.Categories.Add(obj);
-				_db.SaveChanges();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Save();
 				TempData["success"] = "Category created successfully";
 
 				return RedirectToAction("index", "category");
@@ -42,8 +43,8 @@ namespace Ecommerce.Controllers
 				return NotFound();
 
 			}
-			Category? categoryFromdb = _db.Categories.Find(id);
-			if(categoryFromdb == null) {
+			Category? categoryFromdb = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
+            if (categoryFromdb == null) {
 				return NotFound();
 			}
 
@@ -55,8 +56,8 @@ namespace Ecommerce.Controllers
 
 			if (ModelState.IsValid)
 			{
-				_db.Categories.Update(obj);
-				_db.SaveChanges();
+                _unitOfWork.Category.Update(obj);
+                _unitOfWork.Save();
 				TempData["success"] = "Category updates successfully";
 
 				return RedirectToAction("index", "category");
@@ -72,9 +73,9 @@ namespace Ecommerce.Controllers
 			{
 				return NotFound();
 			}
-			var categoryFromDb = _db.Categories.Find(id);
+			var categoryFromDb = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
 
-			if (categoryFromDb == null)
+            if (categoryFromDb == null)
 			{
 				return NotFound();
 			}
@@ -87,14 +88,14 @@ namespace Ecommerce.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult DeletePOST(int? id)
 		{
-			var obj = _db.Categories.Find(id);
-			if (obj == null)
+			var obj = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
+            if (obj == null)
 			{
 				return NotFound();
 			}
 
-			_db.Categories.Remove(obj);
-			_db.SaveChanges();
+            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Save();
 			TempData["success"] = "Category deleted successfully";
 			return RedirectToAction("Index");
 

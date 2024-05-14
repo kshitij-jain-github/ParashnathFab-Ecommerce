@@ -1,0 +1,142 @@
+﻿@using Ecommerce.Model.ViewModel
+ @model ProductVM
+
+
+ 
+<!--Main layout-->
+
+     <form method="post" >
+    <input hidden asp-for="Product.Id" />
+    <div class="container ">
+        <a asp-action="Index" class="btn btn-outline-primary bg-gradient mt-2 mb-5 fw-semibold btn-sm text-uppercase">
+            <small>Back to home</small>
+        </a>
+        <!--Grid row-->
+        <div class="row ">
+            <!--Grid column-->
+            <div class="col-md-6 mb-4 ">
+                <img src="@Model.Product.ImageUrl" class="img-fluid rounded" alt="" />
+            </div>
+            <!--Grid column-->
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+                <!--Content-->
+                <div class="p-4">
+                    <div class="mb-3">
+                        <h1>@Model.Product.Product_Name</h1>
+
+                        <div class="col-12 col-md-6 pb-4"> 
+                            <span class="text-dark "><b>Band: </b>@Model.Product.Brand</span>
+                        </div>
+                         <a href="">
+                            <span class="badge bg-dark me-1">@Model.Product.Category.Name</span>
+                        </a>
+                        <a href="">
+                            <span class="badge bg-info me-1">New</span>
+                        </a>
+                        <a href="">
+                            <span class="badge bg-danger me-1">Bestseller</span>
+                        </a>
+                    </div>
+
+                    <p class="lead">
+                        <span class="me-1">
+                            <del>$@Model.Product.ListPrice</del>
+                        </span>
+                        <span class="h3">$@Model.Product.Price</span>
+                    </p>
+                    <div class="row ps-2">
+                        <h6 class="text-dark text-opacity-50 ">Fabric : @Model.Product.Fabric</h6>
+                    </div>
+                    <div class="row ps-2">
+                        <h6 class="text-dark text-opacity-50 ">Size : @Model.Product.Size</h6>
+                    </div>
+                   
+                    <div class="row text-center ps-2">
+                        <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                            <div class="text-dark text-opacity-50 fw-semibold">Quantity</div>
+                        </div>
+                        <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                            <div class="text-dark text-opacity-50 fw-semibold">1-50</div>
+                        </div>
+                        <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                            <div class="text-dark text-opacity-50 fw-semibold">51-100</div>
+                        </div>
+                        <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                            <div class="text-dark text-opacity-50 fw-semibold">100+</div>
+                        </div>
+                    </div>
+                    <div class="row text-center ps-2">
+                        <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold">
+                            <div>Price</div>
+                        </div>
+                        <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold">
+                            <div>@Model.Product.Price.ToString("c")</div>
+                        </div>
+                        <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold">
+                            <div>@Model.Product.Price50.ToString("c")</div>
+                        </div>
+                        <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold">
+                            <div>@Model.Product.Price100.ToString("c")</div>
+                        </div>
+                    </div>
+ 
+
+                    <form class="d-flex justify-content-left">
+                        <!-- Default input -->
+                        <div class="form-outline row  mt-4 m-0" >
+                            <div class="col-lg-2 m-0 p-0 border border-dark">
+                                <input type="number" value="1" class="form-control " />
+                            </div>
+                            <div class="col-lg-4">
+                                <button class="btn btn-primary ms-1" type="submit">
+                                    Add to cart
+                                    <i class="fas fa-shopping-cart ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                       
+                    </form>
+                </div>
+                <!--Content-->
+            </div>
+            <!--Grid column-->
+        </div>
+        <!--Grid row-->
+
+        <hr />
+
+        <!--Grid row-->
+        <div class="row d-flex justify-content-center">
+            <!--Grid column-->
+            <div class="col-md-6 text-center">
+                <h4 class="my-4 h4">Additional information</h4>
+
+                <p>@Html.Raw(Model.Product.Description)</p>
+            </div>
+            <!--Grid column-->
+        </div>
+        <!--Grid row-->
+        <!--Grid row-->
+        <div class="row">
+            <!--Grid column-->
+            <div class="col-lg-4 col-md-12 mb-4">
+                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt="" />
+            </div>
+            <!--Grid column-->
+            <!--Grid column-->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt="" />
+            </div>
+            <!--Grid column-->
+            <!--Grid column-->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt="" />
+            </div>
+            <!--Grid column-->
+        </div>
+        <!--Grid row-->
+    </div>
+    </form>
+ 
+ 

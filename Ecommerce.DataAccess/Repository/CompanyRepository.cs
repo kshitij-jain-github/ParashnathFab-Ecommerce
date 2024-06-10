@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Data;
+using Ecommerce.DataAccess.Repository.IRepository;
 using Ecommerce.Model;
 using System;
 using System.Collections.Generic;

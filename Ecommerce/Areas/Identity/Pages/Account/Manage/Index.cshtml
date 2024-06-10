@@ -21,6 +21,35 @@
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.StreetAddress" class="form-control" placeholder="Please enter your Street Address." />
+                <label asp-for="Input.StreetAddress" class="form-label"></label>
+                <span asp-validation-for="Input.StreetAddress" class="text-danger"></span>
+            </div>
+            <div class="row mt-4 mb-4">
+                <div class="col">
+                    <div class="form-outline" data-mdb-input-init>
+                        <input asp-for="Input.City" type="text" id="form3Example1" class="form-control" />
+                        <label asp-for="Input.City" class="form-label" for="form3Example1">City</label>
+                    </div>
+                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                </div>
+
+                <div class="col">
+                    <div class="form-outline" data-mdb-input-init>
+                        <input asp-for="Input.State" type="text" id="form3Example1" class="form-control" />
+                        <label asp-for="Input.State" class="form-label" for="form3Example1">State</label>
+                    </div>
+                    <span asp-validation-for="Input.State" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="form-outline" data-mdb-input-init>
+                        <input asp-for="Input.PostalCode" type="text" id="form3Example1" class="form-control" />
+                        <label asp-for="Input.PostalCode" class="form-label" for="form3Example1">Postal Code</label>
+                    </div>
+                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                </div>
+            </div>
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>

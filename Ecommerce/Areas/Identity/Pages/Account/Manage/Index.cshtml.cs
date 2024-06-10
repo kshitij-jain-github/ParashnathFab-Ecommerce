@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Ecommerce.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -55,9 +56,20 @@ namespace Ecommerce.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Steet Address")]
+            public string? StreetAddress { get; set; }
+            [Display(Name = "City")]
+            public string? City { get; set; }
+            [Display(Name = "State")]
+            public string? State { get; set; }
+            [Display(Name = "Postal Code")]
+            public string? PostalCode { get; set; }
         }
 
         private async Task LoadAsync(IdentityUser user)
@@ -67,10 +79,26 @@ namespace Ecommerce.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
 
+            var email = await _userManager.GetEmailAsync(user);
+
+            var applicationUser = await _userManager.FindByIdAsync(user.Id) as ApplicationUser;
+            if (applicationUser == null)
+            {
+                // Handle the case where the user is not an instance of ApplicationUser
+                // For example, you could throw an exception or log an error message
+                throw new Exception("User is not an instance of ApplicationUser");
+            }
+
+ 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
-            };
+                PhoneNumber = phoneNumber,
+                State = applicationUser.State,
+                City = applicationUser.City,
+                PostalCode = applicationUser.PostalCode,
+                StreetAddress = applicationUser.StreetAddress,
+                 
+             };
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -92,13 +120,18 @@ namespace Ecommerce.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);
                 return Page();
             }
-
+            var applicationUser = await _userManager.FindByIdAsync(user.Id) as ApplicationUser;
+            if (applicationUser == null)
+            {
+                // Handle the case where the user is not an instance of ApplicationUser
+                // For example, you could throw an exception or log an error message
+                throw new Exception("User is not an instance of ApplicationUser");
+            }
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -109,6 +142,18 @@ namespace Ecommerce.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+             applicationUser.State = Input.State;
+            applicationUser.City = Input.City;
+             applicationUser.PostalCode = Input.PostalCode;
+            applicationUser.StreetAddress = Input.StreetAddress;
+
+            var updateResult = await _userManager.UpdateAsync(applicationUser);
+            if (!updateResult.Succeeded)
+            {
+                StatusMessage = "Unexpected error when trying to update user details.";
+                return RedirectToPage();
+            }
+
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

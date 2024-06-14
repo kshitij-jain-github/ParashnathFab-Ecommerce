@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Ecommerce.DataAccess.Repository
 {
-    public class OrderDetailRepository : Repository<OrderDetail>, IOrderDeailRepository
+    public class OrderDetailRepository : Repository<OrderDetail>, IOrderDetailRepository
     {
         private ApplicationDbContext _db;
 

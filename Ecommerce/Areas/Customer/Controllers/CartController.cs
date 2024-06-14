@@ -28,19 +28,46 @@ namespace Ecommerce.Areas.Customer.Controllers
 			{
 				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
 				includeProperties: "Product"),
+				OrderHeader = new OrderHeader() // Initialize OrderHeader here
+
 			};
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
-				cart.price = GetPriceBasedOnQuantity(cart.Count, cart.Product.Price,
-				   cart.Product.Price50, cart.Product.Price100);
-				ShoppingCartVM.OrderTotal += (cart.price * cart.Count);
+				double price = GetPriceBasedOnQuantity(cart);
+				ShoppingCartVM.OrderHeader.OrderTotal += (price * cart.Count);
 			}
 			return View(ShoppingCartVM);
 		}
 
 		public IActionResult Summary()
 		{
-			return View();
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+			ShoppingCartVM = new ShoppingCartVM()
+			{
+				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
+				includeProperties: "Product"),
+				OrderHeader = new OrderHeader() // Initialize OrderHeader here
+
+			};
+			ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(
+			  u => u.Id == claim.Value);
+
+			ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
+			ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
+			ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAddress;
+			ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
+			ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.ApplicationUser.State;
+			ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
+
+
+			foreach (var cart in ShoppingCartVM.ShoppingCartList)
+			{
+				double price = GetPriceBasedOnQuantity(cart);
+				ShoppingCartVM.OrderHeader.OrderTotal += (price * cart.Count);
+			}
+			return View(ShoppingCartVM);
 		}
 		public IActionResult Plus(int cartId)
 		{
@@ -77,19 +104,19 @@ namespace Ecommerce.Areas.Customer.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		private double GetPriceBasedOnQuantity(double quantity, double price, double price50, double price100)
+		private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
 		{
-			if (quantity <= 50)
+			if (shoppingCart.Count <= 50)
 			{
-				return price;
+				return shoppingCart.Product.Price ;
 			}
 			else
 			{
-				if (quantity <= 100)
+				if (shoppingCart.Count <= 100)
 				{
-					return price50;
+					return shoppingCart.Product.Price50;
 				}
-				return price100;
+				return shoppingCart.Product.Price100;
 			}
 		}
 	}

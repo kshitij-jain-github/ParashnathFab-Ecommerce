@@ -1,6 +1,4 @@
 ﻿@model Ecommerce.Model.ViewModel.ShoppingCartVM
- 
-
 <form method="post">
 	<br />
 	<div class="container">
@@ -92,8 +90,8 @@
 											<h6 class="my-0">@details.Product.Product_Name</h6>
 											<small class="text-muted">Quantity: @details.Count</small>
 										</div>
-@* 										<span class="text-muted">@((details.Price * details.Count).ToString("c")) </span>
- *@									</li>
+										<span class="text-muted">@((details.price*details.Count).ToString("c")) </span>
+									</li>
 								}
 								<li class="list-group-item d-flex justify-content-between bg-light">
 									<small class="text-info">Total (USD)</small>

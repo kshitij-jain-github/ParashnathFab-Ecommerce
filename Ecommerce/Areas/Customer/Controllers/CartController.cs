@@ -33,8 +33,8 @@ namespace Ecommerce.Areas.Customer.Controllers
 			};
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
-				double price = GetPriceBasedOnQuantity(cart);
-				ShoppingCartVM.OrderHeader.OrderTotal += (price * cart.Count);
+				cart.price = GetPriceBasedOnQuantity(cart);
+				ShoppingCartVM.OrderHeader.OrderTotal += (cart.price * cart.Count);
 			}
 			return View(ShoppingCartVM);
 		}
@@ -64,8 +64,8 @@ namespace Ecommerce.Areas.Customer.Controllers
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
-				double price = GetPriceBasedOnQuantity(cart);
-				ShoppingCartVM.OrderHeader.OrderTotal += (price * cart.Count);
+				cart.price = GetPriceBasedOnQuantity(cart);
+				ShoppingCartVM.OrderHeader.OrderTotal += (cart.price * cart.Count);
 			}
 			return View(ShoppingCartVM);
 		}

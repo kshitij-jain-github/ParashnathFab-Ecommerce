@@ -14,6 +14,8 @@ namespace Ecommerce.Areas.Customer.Controllers
 	{
 
 		private readonly IUnitOfWork _unitOfWork;
+		[BindProperty]
+
 		public ShoppingCartVM ShoppingCartVM { get; set; }
 		public CartController(IUnitOfWork unitOfWork)
 		{
@@ -68,6 +70,69 @@ namespace Ecommerce.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.price * cart.Count);
 			}
 			return View(ShoppingCartVM);
+		}
+
+		[HttpPost]
+		[ActionName("Summary")]
+		public IActionResult SummaryPOST()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+
+			ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
+			includeProperties: "Product");
+
+			ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
+			ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value ;
+			ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(
+			  u => u.Id == claim.Value);
+			
+
+			foreach (var cart in ShoppingCartVM.ShoppingCartList)
+			{
+				cart.price = GetPriceBasedOnQuantity(cart);
+				ShoppingCartVM.OrderHeader.OrderTotal += (cart.price * cart.Count);
+			}
+
+			ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+
+			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+			{
+				ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+				ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+			}
+			else
+			{
+				ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
+				ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
+			}
+			_unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
+			_unitOfWork.Save();
+			foreach (var cart in ShoppingCartVM.ShoppingCartList)
+			{
+				OrderDetail orderDetail = new()
+				{
+					ProductId = cart.ProductId,
+					OrderId = ShoppingCartVM.OrderHeader.Id,
+					Price = cart.price,
+					Count = cart.Count
+				};
+				_unitOfWork.OrderDetail.Add(orderDetail);
+				_unitOfWork.Save();
+			}
+			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+			{
+
+			}
+
+			return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
+		}
+
+
+		public IActionResult OrderConfirmation(int id)
+		{
+			return View(id);
 		}
 		public IActionResult Plus(int cartId)
 		{
